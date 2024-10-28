@@ -1,38 +1,33 @@
 import { ptBR } from 'date-fns/locale';
 import styles from './Posts.module.css';
 import { Avatar } from '../avatar/Avatar';
+import { Comments, Content, PostType } from '../../infra/type';
 import { Comment } from './comment/Comment';
 import { dataComments } from '../../infra/dada';
 import { format, formatDistanceToNow } from 'date-fns';
-import { Author, Content, Comments } from '../../infra/type';
 import { ChangeEvent, FormEvent, InvalidEvent, useEffect, useState } from 'react';
 
 interface PostsProps {
-  id_post: number;
-  author: Author;
-  avatar: string;
-  role: string;
-  content: Content[];
-  publishedAt: Date;
+  post: PostType;
 }
 
-export const Posts = ({ id_post, author, avatar, role, content, publishedAt = new Date() }: PostsProps) => {
+export const Posts = ({ post }: PostsProps) => {
   const [comments, setComments] = useState<Comments[]>([]);
   const [newCommentText, setNewCommentText] = useState('');
 
   useEffect(() => {
     const initialComments: Comments[] = dataComments
       .filter((comment: Comments) =>
-        comment.id_post === id_post);
+        comment.id_post === post.id_post);
 
     setComments(initialComments);
-  }, [id_post]);
+  }, [post.id_post]);
 
-  const publishedDateFormatted = format(publishedAt, "d 'de' LLLL 'às' HH:mm'h'", {
+  const publishedDateFormatted = format(post.pusblishedAt, "d 'de' LLLL 'às' HH:mm'h'", {
     locale: ptBR,
   });
 
-  const publishedDateRelativeToNow = formatDistanceToNow(publishedAt, {
+  const publishedDateRelativeToNow = formatDistanceToNow(post.pusblishedAt, {
     locale: ptBR,
     addSuffix: true,
   });
@@ -40,7 +35,7 @@ export const Posts = ({ id_post, author, avatar, role, content, publishedAt = ne
   const handleCreateNewComment = (event: FormEvent) => {
     event.preventDefault();
     const newComment = {
-      id_post,
+      id_post: post.id_post,
       name: 'Elvis Farias',
       avatarUrl: 'https://github.com/elvisrfarias.png',
       content: newCommentText,
@@ -69,23 +64,23 @@ export const Posts = ({ id_post, author, avatar, role, content, publishedAt = ne
     <article className={styles.post}>
       <header>
         <div className={styles.author}>
-          <Avatar src={avatar} />
+          <Avatar src={post.author.avatarUrl} />
           <div className={styles.authorInfo}>
-            <strong>{author.name}</strong>
-            <span>{role}</span>
+            <strong>{post.author.name}</strong>
+            <span>{post.author.role}</span>
           </div>
         </div>
 
         <time
           title={publishedDateFormatted}
-          dateTime={publishedAt.toISOString()}
+          dateTime={post.pusblishedAt.toISOString()}
         >
           {publishedDateRelativeToNow}
         </time>
       </header>
 
       <div className={styles.content}>
-        {content.map((line: Content) => {
+        {post.content.map((line: Content) => {
           if (line.type === 'paragraph') {
             return <p key={line.content}>{line.content}</p>
           } else if (line.type === 'link') {

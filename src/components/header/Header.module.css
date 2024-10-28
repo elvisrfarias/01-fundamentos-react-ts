@@ -8,3 +8,7 @@
 .header img {
   height: 2rem;
 }
+
+.header h3 {
+  margin-left: 1rem;
+}

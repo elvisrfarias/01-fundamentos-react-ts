@@ -1,4 +1,4 @@
-export interface Post {
+export interface PostType {
     id_post: number;
     author: Author;
     content: Content[];
