@@ -1,3 +1,3 @@
 # Projeto feito em React com TypeScript
 
-[alt text](image.png)
+![alt text](image.png)
